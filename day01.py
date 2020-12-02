@@ -17,30 +17,21 @@ def find_product_of_two_2020_addends(entries_list):
 def find_product_of_three_2020_addends(entries_list):
     entries_list.sort()
     list_length = len(entries_list)
-    for low in range(list_length):
-        print("low: " + str(entries_list[low]))
-        for high in reversed(range(len(entries_list))):
-            print("high: " + str(entries_list[high]))
-            increment_low = False
+    entries_dict = {}
 
-            # don't continue if the high and low ALREADY exceed 2020
-            if entries_list[low] + entries_list[high] > 2020:
-                print("---two numbers were already too high")
-                continue
-            
-            print("middle range will be " + str(entries_list[high]) + " to " + str(entries_list[low+1]))
-            for middle in reversed(range(low+1,high)):
-                print("middle: " + str(entries_list[middle]))
-                if entries_list[low] + entries_list[middle] + entries_list[high] < 2020:
-                    print("---three numbers were too low")
-                    increment_low = True
-                    break
-                if entries_list[low] + entries_list[middle] + entries_list[high] == 2020:
-                    return entries_list[low] * entries_list[middle] * entries_list[high]
-                print("---three numbers did not add up to 2020")
-            
-            if (increment_low):
-                break
+    for x in range(list_length):
+        entry = entries_list[x]
+        if entry in entries_dict:
+            entries_dict[entry] = entries_dict[entry] + 1
+        else:
+            entries_dict[entry] = 1
+    
+    for low in range(list_length):
+        for high in reversed(range(len(entries_list))):
+            needed_addend = 2020 - (entries_list[low] + entries_list[high])
+            if needed_addend in entries_dict:
+                return needed_addend * entries_list[low] * entries_list[high]
+
     return "no three entries add up to 2020"
 
 print(find_product_of_three_2020_addends(generate_list()))

@@ -25,3 +25,11 @@ The downside of this approach is obviously the runtime -- worst case scenario, t
 - Determine the range for the most-nested loop by always putting its range between the indices of the first and second loop so that we can prevent double-counting
 
 There's probably a few edge cases I didn't account for (like the upper bound going below the lower bound), but _c'est la vie_.
+
+**UPDATE:** My spouse guilted me into rewriting this for performance (or rather, he showed me his super fast C version which made me jealous). I improved the runtime by replacing the middle loop with a lookup. The changes were as follows:
+- Create a dictionary ([super easy, it turns out -- thanks stackoverflow](https://stackoverflow.com/questions/1602934/check-if-a-given-key-already-exists-in-a-dictionary)) that includes keys for all the entries where their values are the number of times those entries appear in the list
+- Replace the middle loop with a check to calculate the desired addend by adding the current lower and upper values and subtracting those from 2020
+- Check to see if the desired addend is in the dictionary -- if so, return the product
+- Remove superfluous checks
+
+I think the lesson here is to be mildly competitive and to marry someone in the same field as you who will make you always strive to write better code. 
