@@ -46,3 +46,13 @@ My solution to part 1 was as follows:
 2. Define a `create_password_list(input_file)` method that opens a specified file and generates a list of `PasswordEtntry` instances from its contents
 3. Define a `count_valid_passwords(input_file)` method that calls the aforementioned `create_password_list` method and then iterates through its elements, incrementing a `valid_password_count` counter for each element whose `is_valid()` returns `True`
 4. 🥂 
+
+For part two, the logic of what makes a password valid changed, but I didn't want to redo my existing solution -- rather, I wanted to be able to easily switch between part 1 and part 2 logic without removing or rewriting code. Accordingly, I made the following changes:
+- Created two new properties on my `PasswordEntry` class, `first_character_position` and `second_character_position`, which have the same values as the `min...` and `max...` properties, but with 1 subtracted so that they are properly zero-indexed
+- Renamed the `is_valid()` method to be `is_valid_part1()`
+- Created an `is_valid_part2()` method which first checks to make sure there are no out of bounds errors and then determines if position 1 and position 2 contain the desired character
+- Lastly, the `is_valid_part2()` method returns an exclusive-or check (i.e. the first or second position have the required character, but not both)
+
+Now, to toggle between part 1's logic and part 2's logic, all I need to do is change which `is_valid...()` method that I call, and _voila_! 
+
+Worked on the first try 😎

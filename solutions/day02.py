@@ -25,6 +25,8 @@ class PasswordEntry:
         self.required_character = ''
         self.min_required_character = 0
         self.max_required_character = 0
+        self.first_character_position = -1
+        self.second_character_position = -1
 
         entry_elements = full_line.split()
         if len(entry_elements) == 3:
@@ -34,6 +36,8 @@ class PasswordEntry:
             if len(character_range) == 2:
                 self.min_required_character = int(character_range[0])
                 self.max_required_character = int(character_range[1])
+                self.first_character_position = self.min_required_character-1
+                self.second_character_position = self.max_required_character-1
         else:
             print("WARNING: invalid password; there were " + str(len(entry_elements))) + " entry elements instead of 3."
     
@@ -41,14 +45,30 @@ class PasswordEntry:
         print("Password: " + self.password)
         print("Required Character: " + self.required_character)
         print("Required Character Occurrences: " + str(self.min_required_character) + " to " + str(self.max_required_character))
-        if self.is_valid():
-            print("This password is valid.")
+        if self.is_valid_part1():
+            print("This password is valid by the old standards.")
         else:
-            print("This password is not valid.")
+            print("This password is not valid by the old standards.")
+        if self.is_valid_part2():
+            print("This password is valid by the new standards.")
+        else:
+            print("This password is not valid by the new standards.")
     
-    def is_valid(self):
+    def is_valid_part1(self):
         character_count = self.password.count(self.required_character)
         return character_count >= self.min_required_character and character_count <= self.max_required_character
+    
+    def is_valid_part2(self):
+        password_length = len(self.password)
+        if self.first_character_position < 0 or self.second_character_position < 0 or self.first_character_position >= password_length or self.second_character_position >= password_length:
+            # out of bounds error
+            return False
+
+        first_position_contains_character = self.password[self.first_character_position] == self.required_character
+
+        second_position_contains_character = self.password[self.second_character_position] == self.required_character
+
+        return first_position_contains_character != second_position_contains_character
 
 def create_password_list(input_file):
     # open file
@@ -68,7 +88,7 @@ def count_valid_passwords(input_file):
     password_list = create_password_list(input_file)
 
     for password_entry in password_list:
-        if password_entry.is_valid():
+        if password_entry.is_valid_part2():
             valid_password_count += 1
 
     print(str(valid_password_count) + " of " + str(len(password_list)) + " are valid.")
