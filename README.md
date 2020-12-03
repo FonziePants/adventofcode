@@ -56,3 +56,12 @@ For part two, the logic of what makes a password valid changed, but I didn't wan
 Now, to toggle between part 1's logic and part 2's logic, all I need to do is change which `is_valid...()` method that I call, and _voila_! 
 
 Worked on the first try 😎
+
+### Day 3
+Today's was pretty straightforward. Before I even finished readng the problem, I figured it would make sense to write the code to ingest the map and store it as a 2D boolean array of tree-or-no-tree. I threw this in a class so that I could run convenience methods (like printing) without needing to pass in a 2d array everywhere.
+
+The trickiest part of this is probably the map extension, but this was easy to solve with modulo math. Basically, store the original width, and then when either printing or calculating a tree hit, just use X modulo map-width.
+
+By passing in the x-delta and y-delta programmatically, I was easily able to extend my answer to part 2 without making any major functional changes.
+
+The main issue I ran into, for which I used pretty printing to debug, was that the newline character of the files being read in was wrongly adding to the map's width. A simple `str.rstrip()` call fixed this issue.

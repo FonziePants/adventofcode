@@ -77,7 +77,7 @@ class TreeMap:
         for row in range(len(self.map)):
             strip = ""
             for col in range(desired_width):
-                strip += Constants.C_TREE if self.map[row][col%self.width-1] else Constants.C_OPEN
+                strip += Constants.C_TREE if self.map[row][col%self.width] else Constants.C_OPEN
             print(strip)
     
     def count_trees(self, x_delta, y_delta):
@@ -87,7 +87,7 @@ class TreeMap:
         
         while (y < len(self.map)):
             # make sure we don't go out of bounds
-            x = x % (self.width-1)
+            x = x % self.width
             
             if self.map[y][x]:
                 tree_count += 1
@@ -108,17 +108,17 @@ class TreeMap:
         for row in range(len(self.map)):
             strip = ""
             for col in range(desired_width):
-                if y == row and x == col%(self.width-1):
-                    strip += Constants.C_HIT if self.map[row][col%(self.width-1)] else Constants.C_MISS
+                if y == row and x == col%self.width:
+                    strip += Constants.C_HIT if self.map[row][col%(self.width)] else Constants.C_MISS
 
                     x += x_delta
-                    x %= (self.width-1)
+                    x %= self.width
                     y += y_delta
 
-                    if self.map[row][col%(self.width-1)]:
+                    if self.map[row][col%self.width]:
                         tree_count += 1
                 else:
-                    strip += Constants.C_TREE if self.map[row][col%(self.width-1)] else Constants.C_OPEN
+                    strip += Constants.C_TREE if self.map[row][col%self.width] else Constants.C_OPEN
             print(strip)
         
         print(str(tree_count))
@@ -138,6 +138,7 @@ def create_2d_map(input_file):
     row = 0
 
     for line in file:
+        line = line.rstrip()
         line_length = len(line)
 
         # assumption: all lines will have the same line length,
