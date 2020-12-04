@@ -7,7 +7,7 @@ To set up Python in a Windows 10 VS Code environment, [follow these instructions
 
 ## The challenges
 
-### Day 1: Report Repair
+### [Day 1: Report Repair](https://adventofcode.com/2020/day/1)
 I chose to use Python because I haven't used it in 16 years (2004!!) and everybody seems to love it these days. Turns out, I still dislike dynamically typed languages. Additionally, the fact that the built-in `sort()` method mutates the object it's used on instead of returning a copy also threw me for a loop. [Thank goodness for stackoverflow and the time and head-bangings it saves](https://stackoverflow.com/questions/7301110/why-does-return-list-sort-return-none-not-the-list).
 
 I wavered between using a dictionary/hashmap data structure, where I could calculate the expected addend and do a lookup, versus iterating through loops and risking worst-case O(n<sup>2</sup>) performance. Ultimately, I opted for the loops if only because I was re-learning Python on the fly and I wanted to go to bed on time.
@@ -34,7 +34,7 @@ There's probably a few edge cases I didn't account for (like the upper bound goi
 
 I think the lesson here is to be mildly competitive and to marry someone in the same field as you who will make you always strive to write better code. 
 
-### Day 2: Password Philosophy
+### [Day 2: Password Philosophy](https://adventofcode.com/2020/day/2)
 So far, this whole "Advent of Code" thing seems like a great way to learn (or re-learn, in my case) a language. For day 2, I need to take a structured input and make sense of it, so this seemed like a great opportunity to learn [how to read lines from a file](https://www.w3schools.com/python/python_file_open.asp). Turns out, Python makes this easy (like everything else).
 
 Because each line represented a password entry, and because each password entry had several characteristics (i.e. the password itself, a required character, and the minimum and maximum number of instances of said character), this seemed like a great opportunity to use a class. As always, [w3 schools is a wonderful resource](https://www.w3schools.com/python/python_classes.asp)!
@@ -57,7 +57,7 @@ Now, to toggle between part 1's logic and part 2's logic, all I need to do is ch
 
 Worked on the first try 😎
 
-### Day 3: Toboggan Trajectory
+### [Day 3: Toboggan Trajectory](https://adventofcode.com/2020/day/3)
 Today's was pretty straightforward. Before I even finished readng the problem, I figured it would make sense to write the code to ingest the map and store it as a 2D boolean array of tree-or-no-tree. I threw this in a class so that I could run convenience methods (like printing) without needing to pass in a 2d array everywhere.
 
 The trickiest part of this is probably the map extension, but this was easy to solve with modulo math. Basically, store the original width, and then when either printing or calculating a tree hit, just use X modulo map-width.
@@ -66,7 +66,7 @@ By passing in the x-delta and y-delta programmatically, I was easily able to ext
 
 The main issue I ran into, for which I used pretty printing to debug, was that the newline character of the files being read in was wrongly adding to the map's width. A simple `str.rstrip()` call fixed this issue.
 
-### Day 4: Passport Processing
+### [Day 4: Passport Processing](https://adventofcode.com/2020/day/4)
 This passport puzzle was a sad reminder that we can't travel during these pandemic times 😭 But the good news is that today was the first day that I completed the puzzle before the other two people on my friend's private leaderboard ✨ ...although this required me cutting some corners as my spouse typed furiously on his newly cleaned mechanical keyboard behind me.
 
 For this puzzle, I decided my `solutions` directory was getting a little too messy and so I made a subdirectory for Day 04 specifically. I plan to continue this going forward.
