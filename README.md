@@ -7,7 +7,7 @@ To set up Python in a Windows 10 VS Code environment, [follow these instructions
 
 ## The challenges
 
-### Day 1
+### Day 1: Report Repair
 I chose to use Python because I haven't used it in 16 years (2004!!) and everybody seems to love it these days. Turns out, I still dislike dynamically typed languages. Additionally, the fact that the built-in `sort()` method mutates the object it's used on instead of returning a copy also threw me for a loop. [Thank goodness for stackoverflow and the time and head-bangings it saves](https://stackoverflow.com/questions/7301110/why-does-return-list-sort-return-none-not-the-list).
 
 I wavered between using a dictionary/hashmap data structure, where I could calculate the expected addend and do a lookup, versus iterating through loops and risking worst-case O(n<sup>2</sup>) performance. Ultimately, I opted for the loops if only because I was re-learning Python on the fly and I wanted to go to bed on time.
@@ -34,7 +34,7 @@ There's probably a few edge cases I didn't account for (like the upper bound goi
 
 I think the lesson here is to be mildly competitive and to marry someone in the same field as you who will make you always strive to write better code. 
 
-### Day 2
+### Day 2: Password Philosophy
 So far, this whole "Advent of Code" thing seems like a great way to learn (or re-learn, in my case) a language. For day 2, I need to take a structured input and make sense of it, so this seemed like a great opportunity to learn [how to read lines from a file](https://www.w3schools.com/python/python_file_open.asp). Turns out, Python makes this easy (like everything else).
 
 Because each line represented a password entry, and because each password entry had several characteristics (i.e. the password itself, a required character, and the minimum and maximum number of instances of said character), this seemed like a great opportunity to use a class. As always, [w3 schools is a wonderful resource](https://www.w3schools.com/python/python_classes.asp)!
@@ -57,7 +57,7 @@ Now, to toggle between part 1's logic and part 2's logic, all I need to do is ch
 
 Worked on the first try 😎
 
-### Day 3
+### Day 3: Toboggan Trajectory
 Today's was pretty straightforward. Before I even finished readng the problem, I figured it would make sense to write the code to ingest the map and store it as a 2D boolean array of tree-or-no-tree. I threw this in a class so that I could run convenience methods (like printing) without needing to pass in a 2d array everywhere.
 
 The trickiest part of this is probably the map extension, but this was easy to solve with modulo math. Basically, store the original width, and then when either printing or calculating a tree hit, just use X modulo map-width.
@@ -65,3 +65,43 @@ The trickiest part of this is probably the map extension, but this was easy to s
 By passing in the x-delta and y-delta programmatically, I was easily able to extend my answer to part 2 without making any major functional changes.
 
 The main issue I ran into, for which I used pretty printing to debug, was that the newline character of the files being read in was wrongly adding to the map's width. A simple `str.rstrip()` call fixed this issue.
+
+### Day 4: Passport Processing
+This passport puzzle was a sad reminder that we can't travel during these pandemic times 😭 But the good news is that today was the first day that I completed the puzzle before the other two people on my friend's private leaderboard ✨ ...although this required me cutting some corners as my spouse typed furiously on his newly cleaned mechanical keyboard behind me.
+
+For this puzzle, I decided my `solutions` directory was getting a little too messy and so I made a subdirectory for Day 04 specifically. I plan to continue this going forward.
+
+Because the puzzle involved lists of arbitrarily ordered key-value pairs, I started off my work by defining a `Constants` class in which to store all of the keys. Then, I created a `Passport` class with the eight properties defaulting to values of `None`.
+
+To ingest the test data, I created a method that reads the file line by line, storing what it reads into a temporary string variable. When it comes across an empty line, it knows it's at the end of a Passport definition and so it then splits the temporary string by its whitespace and pulls out the values one by one, matching them to a list of keys. It then creates a new `Passport` object, appends that to a list, and clears the temporary string. Rinse, wash, and repeat.
+
+For part one, I just created an `is_valid` method on the `Passport` class that returns `False` if any of the properties are missing (i.e. `is None`) -- with the exception of `country_id`, which is allowed to be missing. This was all pretty straightforward and worked right away, despite my `password_id` type (which I have since fixed).
+
+Part two complicated things a little bit because each property suddenly had its own unique validation requirements. For this, I created a validation method for each individual property. 
+- For **birth year**, **issue year**, and **expiration year**, I created a generic `validate_year(year, min_year, max_year)` with which I could pass in each of the three year property's unique year boundaries. 
+- For **height**, I pulled out the unit and then checked the ranges by unit, returning `False` if any of the safety checks were not met (for example, a `None` value, too short a string length, or a missing unit).
+- With **hair color** is where I cut corners for speed. By the sound of rushed typing coming from behind me, I knew my partner was catching up to me, so in lieu of [importing a regex module](https://www.w3schools.com/python/python_regex.asp) and figuring out the regex needed, I went with what I thought was quicker to implement quickly and correctly. Instead of an elegant regex check, I just made sure that the string was exactly 7 characters in length, that it's first character was `#`, and that the subsequent 6 characters were either a digit (i.e. `isdigit()`) or in the character-set of `a` through `f` (using `.lower()` to avoid needing to worry about casing).
+- For **eye color**, I simply created a list of valid values and then checked to make sure the value was present in it. Easy peasy!
+- With **passport ID**, again, I intentionally sidestepped using regex. Instead, I checked to make sure the string length was nine and that each character was a digit.
+
+On the test data set, I only ran into one issue: I was accidentally returning the opposite boolean value in my year validtion. This fix was `not` very hard 😏
+
+When I moved into the real data set (complete with 291 passports to check 🤯), I had my first experience entering the wrong answer!! 🙈 In addition to some subtle "don't cheat" messaging (a la "hey, your answer was right for _someone else_..."), the error messaging luckily gave me a clue that my answer was _too low_, which means I was wrongly marking some properties and thus passports as invalid. Obviously, 7 validated properties across 291 items is a lot to check, so I broke down my debugging process.
+
+For each passport where **birth year** was marked as invalid (because there was no reason to check the valid ones as my answer was too low, not too high), I printed the allegedly invalid birth years and manually skimmed these to see if there were any anomalies. When my birth year validation checked out, I tried the same with **issue year**, **expiration year**, **height**, and then **hair color**. All were looking good.
+
+Then, when I tested my **eye color** validation, I was in for a surprise: a bunch of `brn` and `gry` eye colors were being marked invalid! A quick scroll up to my validation method revealed a typo... 
+
+I had used this:
+
+<code>
+valid_eye_colors = ["amb", "blu", <b>"brn,"</b> "gry", "grn", "hzl", "oth"]
+</code>
+
+...instead of:
+
+<code>
+valid_eye_colors = ["amb", "blu", <b>"brn",</b> "gry", "grn", "hzl", "oth"]
+</code>
+
+Naturally, there were no `brn,` eye colors. With this quick fix, my validation was working as expected and I was able to get the right answer about two minutes before my spouse could! 😎 Luckily for me, he forgot to include the start and end of line matches in his regex, which not only let me squeak past him on this Day 4 puzzle but also reinforced my decision to skip out on regex today 😂
