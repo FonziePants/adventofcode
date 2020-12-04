@@ -55,8 +55,8 @@ class Constants:
     C_OPEN = "."
     C_HIT = "X"
     C_MISS = "O"
-    TEST_FILE = "solutions\day03_test.txt"
-    REAL_FILE = "solutions\day03.txt"
+    TEST_FILE = "solutions\day03\day03_test.txt"
+    REAL_FILE = "solutions\day03\day03.txt"
 
 
 class TreeMap:

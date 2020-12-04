@@ -75,7 +75,7 @@ Because the puzzle involved lists of arbitrarily ordered key-value pairs, I star
 
 To ingest the test data, I created a method that reads the file line by line, storing what it reads into a temporary string variable. When it comes across an empty line, it knows it's at the end of a Passport definition and so it then splits the temporary string by its whitespace and pulls out the values one by one, matching them to a list of keys. It then creates a new `Passport` object, appends that to a list, and clears the temporary string. Rinse, wash, and repeat.
 
-For part one, I just created an `is_valid` method on the `Passport` class that returns `False` if any of the properties are missing (i.e. `is None`) -- with the exception of `country_id`, which is allowed to be missing. This was all pretty straightforward and worked right away, despite my `password_id` type (which I have since fixed).
+For part one, I just created an `is_valid` method on the `Passport` class that returns `False` if any of the properties are missing (i.e. `is None`) -- with the exception of `country_id`, which is allowed to be missing. This was all pretty straightforward and worked right away, despite my `passpord_id` typo (which I have since fixed).
 
 Part two complicated things a little bit because each property suddenly had its own unique validation requirements. For this, I created a validation method for each individual property. 
 - For **birth year**, **issue year**, and **expiration year**, I created a generic `validate_year(year, min_year, max_year)` with which I could pass in each of the three year property's unique year boundaries. 

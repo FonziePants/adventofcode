@@ -93,4 +93,4 @@ def count_valid_passwords(input_file):
 
     print(str(valid_password_count) + " of " + str(len(password_list)) + " are valid.")
 
-count_valid_passwords("solutions\day02.txt")
+count_valid_passwords("solutions\day02\day02.txt")
