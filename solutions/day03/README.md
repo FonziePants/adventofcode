@@ -34,6 +34,7 @@
 
 Today's was pretty straightforward. Before I even finished readng the problem, I figured it would make sense to write the code to ingest the map and store it as a 2D boolean array of tree-or-no-tree. I threw this in a class so that I could run convenience methods (like printing) without needing to pass in a 2d array everywhere.
 
+## Part 1
 > You start on the open square (.) in the top-left corner and need to reach the bottom (below the bottom-most row on your map).
 >
 > The toboggan can only follow a few specific slopes (you opted for a cheaper model that prefers rational numbers); start by counting all the trees you would encounter for the slope right 3, down 1:
@@ -62,6 +63,7 @@ Today's was pretty straightforward. Before I even finished readng the problem, I
 
 The trickiest part of this is probably the map extension, but this was easy to solve with modulo math. Basically, store the original width, and then when either printing or calculating a tree hit, just use X modulo map-width.
 
+## Part 2
 > --- Part Two ---
 >
 > Time to check the rest of the slopes - you need to minimize the probability of a sudden arboreal stop, after all.
@@ -73,6 +75,7 @@ The trickiest part of this is probably the map extension, but this was easy to s
 >- Right 5, down 1.
 >- Right 7, down 1.
 >- Right 1, down 2.
+>
 > In the above example, these slopes would find 2, 7, 3, 4, and 2 tree(s) respectively; multiplied together, these produce the answer 336.
 >
 > What do you get if you multiply together the number of trees encountered on each of the listed slopes?

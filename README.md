@@ -33,26 +33,3 @@ There's probably a few edge cases I didn't account for (like the upper bound goi
 - Remove superfluous checks
 
 I think the lesson here is to be mildly competitive and to marry someone in the same field as you who will make you always strive to write better code. 
-
-### [Day 2: Password Philosophy](https://adventofcode.com/2020/day/2)
-So far, this whole "Advent of Code" thing seems like a great way to learn (or re-learn, in my case) a language. For day 2, I need to take a structured input and make sense of it, so this seemed like a great opportunity to learn [how to read lines from a file](https://www.w3schools.com/python/python_file_open.asp). Turns out, Python makes this easy (like everything else).
-
-Because each line represented a password entry, and because each password entry had several characteristics (i.e. the password itself, a required character, and the minimum and maximum number of instances of said character), this seemed like a great opportunity to use a class. As always, [w3 schools is a wonderful resource](https://www.w3schools.com/python/python_classes.asp)!
-
-Lastly, to convert this structured file input into the aforementioned class, I needed to also learn a little Python string manipulation to [split the lines into segments](https://www.tutorialspoint.com/python/string_split.htm), to [strip out unwanted characters](https://www.tutorialspoint.com/python/string_replace.htm), and [to count the number of instances of a specific substring](https://www.tutorialspoint.com/python/string_count.htm).
-
-My solution to part 1 was as follows:
-1. Define a `PasswordEntry` class that takes a string and manipulates it into a few properties (i.e. `password`, `required_character`, `min_required_character`, and `max_required_character`) and has `print()` and `is_valid()` methods for testing and convenience
-2. Define a `create_password_list(input_file)` method that opens a specified file and generates a list of `PasswordEtntry` instances from its contents
-3. Define a `count_valid_passwords(input_file)` method that calls the aforementioned `create_password_list` method and then iterates through its elements, incrementing a `valid_password_count` counter for each element whose `is_valid()` returns `True`
-4. 🥂 
-
-For part two, the logic of what makes a password valid changed, but I didn't want to redo my existing solution -- rather, I wanted to be able to easily switch between part 1 and part 2 logic without removing or rewriting code. Accordingly, I made the following changes:
-- Created two new properties on my `PasswordEntry` class, `first_character_position` and `second_character_position`, which have the same values as the `min...` and `max...` properties, but with 1 subtracted so that they are properly zero-indexed
-- Renamed the `is_valid()` method to be `is_valid_part1()`
-- Created an `is_valid_part2()` method which first checks to make sure there are no out of bounds errors and then determines if position 1 and position 2 contain the desired character
-- Lastly, the `is_valid_part2()` method returns an exclusive-or check (i.e. the first or second position have the required character, but not both)
-
-Now, to toggle between part 1's logic and part 2's logic, all I need to do is change which `is_valid...()` method that I call, and _voila_! 
-
-Worked on the first try 😎
