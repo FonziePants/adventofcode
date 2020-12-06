@@ -2,21 +2,31 @@ class CustomsFormAnswers:
     def __init__(self, answer_list=[]):
         self.answer_list = answer_list
         self.response_dict = {}
+        self.num_respondents = 0
 
         # for each group member's answer, update the response dict
         for answer in answer_list:
+            self.num_respondents += 1
             # for each specific answer, increment the question's yes count
             for question in answer:
-                yes_count = 0
+                yes_count = 1
                 if question in self.response_dict.keys():
-                    yes_count = self.response_dict[question] + 1
+                    yes_count += self.response_dict[question]
                 self.response_dict[question] = yes_count
     
-    def get_yes_count(self):
+    def get_any_yes_count(self):
         return len(self.response_dict)
     
+    def get_all_yes_count(self):
+        all_yes_count = 0
+        for key in self.response_dict:
+            if self.response_dict[key] == self.num_respondents:
+                all_yes_count += 1
+        return all_yes_count
+    
     def print(self):
-        print("Number of yes answers: " + str(self.get_yes_count()))
+        print("Number of any yes answers: " + str(self.get_any_yes_count()))
+        print("Number of all yes answers: " + str(self.get_all_yes_count()))
 
 def read_file(input_file):
     file = open(input_file,"r")
@@ -51,15 +61,17 @@ def read_file(input_file):
     file.close()
     return all_answers
 
-def sum_yes_answers(answers):
+def sum_yes_answers(answers, require_all):
     yes_sum = 0
     for answer in all_answers:
-        answer.print()
-        yes_sum += answer.get_yes_count()
+        if require_all:
+            yes_sum += answer.get_all_yes_count()
+        else:
+            yes_sum += answer.get_any_yes_count()
     
     print("Total yes answers: " + str(yes_sum))
     return yes_sum
 
 
 all_answers = read_file("solutions\day06\day06_real.txt")
-sum_yes_answers(all_answers)
+sum_yes_answers(all_answers, True)
