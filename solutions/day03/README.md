@@ -32,7 +32,7 @@
 > .#..#...#.#.#..#...#.#.#..#...#.#.#..#...#.#.#..#...#.#.#..#...#.#  --->
 >```
 
-Today's was pretty straightforward. Before I even finished readng the problem, I figured it would make sense to write the code to ingest the map and store it as a 2D boolean array of tree-or-no-tree. I threw this in a class so that I could run convenience methods (like printing) without needing to pass in a 2d array everywhere.
+Today's was pretty straightforward. Before I even finished reading the problem, I figured it would make sense to write the code to ingest the map and store it as a 2D boolean array of tree-or-no-tree. I threw this in a class so that I could run convenience methods (like printing) without needing to pass in a 2d array everywhere.
 
 ## Part 1
 > You start on the open square (.) in the top-left corner and need to reach the bottom (below the bottom-most row on your map).

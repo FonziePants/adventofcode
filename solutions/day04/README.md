@@ -146,12 +146,12 @@ Then, when I tested my **eye color** validation, I was in for a surprise: a bunc
 
 I had used this:
 ```
-valid_eye_colors = ["amb", "blu", <b>"brn,"</b> "gry", "grn", "hzl", "oth"]
+valid_eye_colors = ["amb", "blu", "brn," "gry", "grn", "hzl", "oth"]
 ```
 
 ...instead of:
 ```
-valid_eye_colors = ["amb", "blu", <b>"brn",</b> "gry", "grn", "hzl", "oth"]
+valid_eye_colors = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
 ```
 
 Naturally, there were no `brn,` eye colors. With this quick fix, my validation was working as expected and I was able to get the right answer about two minutes before my spouse could! 😎 Luckily for me, he forgot to include the start and end of line matches in his regex, which not only let me squeak past him on this Day 4 puzzle but also reinforced my decision to skip out on regex today 😂
