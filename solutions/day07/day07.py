@@ -13,6 +13,9 @@ class Bag:
         if outer_bag_color not in self.outer_bags:
             self.outer_bags.append(outer_bag_color)
     
+    def is_innermost(self):
+        return len(self.inner_bags) == 0
+    
     def print(self):
         print("{0} BAGS HAVE {1} INNER BAGS AND {2} OUTER BAGS:"
                 .format(self.color.upper(), 
@@ -112,9 +115,27 @@ def count_unique_outer_bag_colors(bag_dict, inner_bag_color):
     print("A {0} bag can be inside {1} different bag types.".format(inner_bag_color, len(unique_outer_bags)))
     return len(unique_outer_bags)
 
+def recursively_get_inner_bag_count(bag_dict, parent_bag_color):
+    if bag_dict[parent_bag_color].is_innermost():
+        return 0
+    
+    bag_count = 0
+    for inner_bag_color in bag_dict[parent_bag_color].inner_bags:
+        count_for_color = bag_dict[parent_bag_color].inner_bags[inner_bag_color]
+        inner_bags_for_color = recursively_get_inner_bag_count(bag_dict, inner_bag_color)
+        bag_count += count_for_color * (inner_bags_for_color + 1)
+
+    return bag_count
+
+def count_required_inner_bags(bag_dict, bag_color):
+    count = recursively_get_inner_bag_count(bag_dict, bag_color)
+    print("A {0} bag have {1} inner bags.".format(bag_color, count))
+    return count
+
 bag_dict = read_file("solutions\day07\day07_real.txt")
 
-for color in bag_dict:
-    bag_dict[color].print()
+# for color in bag_dict:
+#     bag_dict[color].print()
 
 count_unique_outer_bag_colors(bag_dict, "shiny gold")
+count_required_inner_bags(bag_dict, "shiny gold")
