@@ -43,7 +43,7 @@ def find_first_invalid_number(full_num_array, preamble, debug=False):
         if debug:
             print("Number {0} at index {1} is valid. Proceed to next entry.".format(num, i))
 
-def find_contiguous_set_of_addends(full_num_array,index_of_num):
+def find_contiguous_set_of_addends(full_num_array,index_of_num,debug=False):
     num_array_subset = full_num_array[:index_of_num]
     sum_target = full_num_array[index_of_num]
 
@@ -66,7 +66,9 @@ def find_contiguous_set_of_addends(full_num_array,index_of_num):
                 if num < lowest_num:
                     lowest_num = num
             
-            print("Sum of values between index {0} (value = {1}) and index {2} (value = {3}) is {4}.".format(start,num_array_subset[start],stop,num_array_subset[stop],sum))
+            if debug:
+                print("Sum of values between index {0} (value = {1}) and index {2} (value = {3}) is {4}.".format(start,num_array_subset[start],stop,num_array_subset[stop],sum))
+            
             if sum == sum_target:
                 encryption_weakness = highest_num + lowest_num
                 print("Sequence found! Terminate program. Encryption weakness = {0}".format(encryption_weakness))
@@ -74,10 +76,16 @@ def find_contiguous_set_of_addends(full_num_array,index_of_num):
     
     return -1
 
-# num_array = read_num_array("solutions\day09\day09_test.txt")
-# index_of_invalid_num = find_first_invalid_number(num_array,5)
-# find_contiguous_set_of_addends(num_array, index_of_invalid_num)
+def run_program(test_data=False,debug=False):
+    file_path = "solutions\day09\day09_real.txt"
+    preamble = 25
 
-num_array = read_num_array("solutions\day09\day09_real.txt")
-index_of_invalid_num = find_first_invalid_number(num_array,25)
-find_contiguous_set_of_addends(num_array, index_of_invalid_num)
+    if test_data:
+        file_path = "solutions\day09\day09_test.txt"
+        preamble = 5
+    
+    num_array = read_num_array(file_path)
+    index_of_invalid_num = find_first_invalid_number(num_array,preamble,debug)
+    find_contiguous_set_of_addends(num_array, index_of_invalid_num,debug)
+
+run_program()
