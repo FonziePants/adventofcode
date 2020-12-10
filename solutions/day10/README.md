@@ -107,7 +107,7 @@ for i in range(1,len(adapters)):
     else:
         diff_count[diff] = 1
 ```
-- Lastly, multiply the difference-counts for 1 and 2
+- Lastly, multiply the difference-counts for 1 and 3
 ```
 return diff_count[1] * diff_count[3]
 ```
@@ -162,6 +162,7 @@ return diff_count[1] * diff_count[3]
 >
 >(0), 3, 4, 7, 10, 11, 14, 17, 20, 23, 25, 28, 31, 34, 35, 38, 39, 42, 45,
 >48, 49, (52)
+>```
 >In total, this set of adapters can connect the charging outlet to your device in 19208 distinct arrangements.
 >
 >You glance back down at your bag and try to remember why you brought so many adapters; there must be more than a trillion valid ways to arrange them! Surely, there must be an efficient way to count the arrangements.
