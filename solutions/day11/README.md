@@ -260,7 +260,7 @@ I didn't read the instructions well enough the first time around and missed the 
 - positive slope: `row_0 - row_1 = col_0 - col_1`
 - negative slope: `row_0 + col_0 = row_1 + col_1`
 
-When I realized the error of my ways, I had to trash my smaller, cleaner code in favor (where "favor" is used loosely...) to eight for-loops (one for each direction). Each direction for-loop looked something like this:
+When I realized the error of my ways, I had to trash my smaller, cleaner code in favor of (where "favor" is used loosely...) eight for-loops (one for each direction). Each direction for-loop looked something like this:
 ```
 # check row (to left)
 for c_index in reversed(range(0,col)):
