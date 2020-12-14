@@ -1,3 +1,5 @@
+#--- Day 13: Shuttle Search ---
+
 def read_data(file_path,debug=True):
     file = open(file_path, "r")
 
@@ -68,14 +70,12 @@ def calculate_part2(data,debug=False):
             continue
         buses[i] = int(orig_bus_list[i])
     
-    min_iterator = buses[0]
-    found_buses = {}
-    found_buses[0] = buses[0]
+    increment = buses[0]
     del buses[0]
 
     time = 0
     while len(buses) > 0:
-        time += min_iterator
+        time += increment
         if debug:
             print("TIME: {0}".format(time))
         buses_copy = buses.copy()
@@ -83,9 +83,8 @@ def calculate_part2(data,debug=False):
             if (time + i) % buses_copy[i] == 0:
                 if debug:
                     print("BUS {0} at index {1}".format(buses_copy[i],i))
-                found_buses[i] = buses_copy[i]
                 del buses[i]
-                min_iterator = product_of_dict(found_buses)
+                increment *= buses_copy[i]
 
     print("Part 2: {0}\n\n".format(time))
     return 
