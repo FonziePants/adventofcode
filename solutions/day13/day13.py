@@ -55,12 +55,6 @@ def calculate_part1(data,debug=False):
     print("Part 1: {0}\n\n".format(answer))
     return answer
 
-def product_of_dict(dict):
-    product = 1
-    for i in dict:
-        product *= dict[i]
-    return product
-
 def calculate_part2(data,debug=False):
     # extract the bus list
     orig_bus_list = data[1].split(",")
@@ -87,7 +81,7 @@ def calculate_part2(data,debug=False):
                 increment *= buses_copy[i]
 
     print("Part 2: {0}\n\n".format(time))
-    return 
+    return time
 
 def run_program(test=False, debug=False):
     file_path = "solutions\day13\day13.txt"
