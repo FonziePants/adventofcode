@@ -53,8 +53,41 @@ def calculate_part1(data,debug=False):
     print("Part 1: {0}\n\n".format(answer))
     return answer
 
+def product_of_dict(dict):
+    product = 1
+    for i in dict:
+        product *= dict[i]
+    return product
+
 def calculate_part2(data,debug=False):
-    print("Part 2: {0}\n\n".format("TODO"))
+    # extract the bus list
+    orig_bus_list = data[1].split(",")
+    buses = {}
+    for i in range(len(orig_bus_list)):
+        if orig_bus_list[i] == "x":
+            continue
+        buses[i] = int(orig_bus_list[i])
+    
+    min_iterator = buses[0]
+    found_buses = {}
+    found_buses[0] = buses[0]
+    del buses[0]
+
+    time = 0
+    while len(buses) > 0:
+        time += min_iterator
+        if debug:
+            print("TIME: {0}".format(time))
+        buses_copy = buses.copy()
+        for i in buses_copy:
+            if (time + i) % buses_copy[i] == 0:
+                if debug:
+                    print("BUS {0} at index {1}".format(buses_copy[i],i))
+                found_buses[i] = buses_copy[i]
+                del buses[i]
+                min_iterator = product_of_dict(found_buses)
+
+    print("Part 2: {0}\n\n".format(time))
     return 
 
 def run_program(test=False, debug=False):
@@ -67,5 +100,5 @@ def run_program(test=False, debug=False):
     calculate_part1(data, debug)
     calculate_part2(data, debug)
 
-# run_program(True, True)
+# run_program(True, False)
 run_program()
