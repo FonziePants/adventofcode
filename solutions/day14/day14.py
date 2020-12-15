@@ -72,8 +72,7 @@ def calculate_part1(data,debug=False):
 
 def generate_addresses(base_address):
     addresses = [base_address]
-    idx = -1
-    while idx < len(base_address)-1:
+    for idx in range(-1,len(base_address)-1):
         idx += 1
         if base_address[idx] != "X":
             continue
