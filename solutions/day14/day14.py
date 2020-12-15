@@ -34,13 +34,15 @@ def convert_to_decimal(bin_num):
         dec_num += (2**(len(bin_num)-1-i))*bin_dgt
     return dec_num
 
-def apply_mask(mask,bin_num):
+def apply_mask(mask,bin_num,pt2=False):
     while len(bin_num) < len(mask):
         bin_num = "0" + bin_num
     bin_list = list(bin_num)
     mask_list = list(mask)
     for i in range(len(mask_list)):
-        if mask_list[i] == "X":
+        if mask_list[i] == "X" and not pt2:
+            continue
+        elif mask_list[i] == "0" and pt2:
             continue
         bin_list[i] = mask_list[i]
     return "".join(bin_list).strip()
@@ -68,9 +70,44 @@ def calculate_part1(data,debug=False):
     print("Part 1: {0}\n\n".format(sum))
     return
 
-def calculate_part2(data,debug=False):
+def generate_addresses(base_address):
+    addresses = [base_address]
+    idx = -1
+    while idx < len(base_address)-1:
+        idx += 1
+        if base_address[idx] != "X":
+            continue
+        new_addresses = []
+        for address in addresses:
+            add_list = list(address)
+            for b in range(0,2):
+                add_list[idx] = str(b)
+                new_addresses.append("".join(add_list))
+        addresses = new_addresses
+            
+    return addresses
 
-    print("Part 2: {0}\n\n".format("TODO"))
+def calculate_part2(data,debug=False):
+    memory = {}
+    mask = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    for line in data:
+        if "mask" in line:
+            mask = line[6:]
+        else:
+            parts = line.split("] = ") 
+            value = int(parts[1])
+            dec_address = int(parts[0][4:])
+            bin_address = convert_to_binary(dec_address)
+            bin_address = apply_mask(mask, bin_address, True)
+            addresses = generate_addresses(bin_address)
+            for address in addresses:
+                memory[address] = value
+    
+    sum = 0
+    for address in memory:
+        sum += memory[address]
+
+    print("Part 2: {0}\n\n".format(sum))
     return 
 
 def run_program(test=False, debug=False):
@@ -82,11 +119,6 @@ def run_program(test=False, debug=False):
 
     calculate_part1(data, debug)
     calculate_part2(data, debug)
-
-    convert_to_decimal("11")
-    convert_to_decimal("1011")
-    convert_to_decimal("1111")
-    convert_to_decimal("10010")
 
 # run_program(True, False)
 run_program()
