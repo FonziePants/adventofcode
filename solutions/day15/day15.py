@@ -13,34 +13,34 @@ def read_data(file_path,debug=True):
     dict = {}
     for i in range(len(list)-1):
         num = int(list[i])
-        if num not in dict:
-            dict[num] = [i]
-        else:
-            dict[num].append(i)
+        dict[num] = i
         list[i] = num
+    list[len(list)-1] = int(list[len(list)-1])
 
     if debug:
         print(dict)
 
-    return (int(list[len(list)-1]),dict)
+    return (list,dict)
 
 def calculate_part1(data,stop,debug=False):  
-    last = data[0] 
+    list = data[0] 
+    last = list[len(list)-1]
     dict = data[1]
 
     for idx in range(len(dict),stop-1):
         num = -1
         if last in dict:
-            num = idx - dict[last][len(dict[last])-1]
-            dict[last].append(idx)
+            num = idx - dict[last]
         else:
             num = 0
-            dict[last] = [idx]
+        dict[last] = idx
+        list.append(last)
         if debug:
             print("turn: {0}\nnum:  {1}\n".format(idx+2,num))
         last = num
         idx += 1
 
+    print(list[len(list)-10:])
     print("Part 1: {0}\n\n".format(last))
     return
 
@@ -51,7 +51,7 @@ def calculate_part2(data,debug=False):
 
 def run_program(test=False, debug=False):
     file_path = "solutions\day15\day15.txt"
-    stop = 2020
+    stop = 30000000
     if test:
         file_path = "solutions\day15\day15_test.txt"
     
@@ -60,5 +60,5 @@ def run_program(test=False, debug=False):
     calculate_part1(data, stop, debug)
     calculate_part2(data, debug)
 
-# run_program(True, True)
+# run_program(True, False)
 run_program()
