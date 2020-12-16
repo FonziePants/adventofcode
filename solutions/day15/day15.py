@@ -22,7 +22,7 @@ def read_data(file_path,debug=True):
 
     return (list,dict)
 
-def calculate_part1(data,stop,debug=False):  
+def calculate(data,stop,part,debug=False):  
     list = data[0] 
     last = list[len(list)-1]
     dict = data[1]
@@ -41,24 +41,21 @@ def calculate_part1(data,stop,debug=False):
         idx += 1
 
     print(list[len(list)-10:])
-    print("Part 1: {0}\n\n".format(last))
+    print("Part {0}: {1}\n\n".format(part,last))
     return
 
-def calculate_part2(data,debug=False):
-
-    print("Part 2: {0}\n\n".format("TODO"))
-    return 
-
-def run_program(test=False, debug=False):
+def run_program(part2,test=False, debug=False):
     file_path = "solutions\day15\day15.txt"
-    stop = 30000000
+    stop = 2020
+    part = 1
     if test:
         file_path = "solutions\day15\day15_test.txt"
+    if part2:
+        stop = 30000000
+        part = 2
     
     data = read_data(file_path, debug)
 
-    calculate_part1(data, stop, debug)
-    calculate_part2(data, debug)
+    calculate(data, stop, part, debug)
 
-# run_program(True, False)
-run_program()
+run_program(True)
