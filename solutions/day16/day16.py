@@ -88,18 +88,17 @@ def discard_invalid_tickets(data,debug=False):
     print("Part 1: {0}\n\n".format(error_rate))
     return (fields,valid_tickets,valid_values)
 
-def calculate_part2(data,debug=False):
+def determine_fields(data,debug=False):
     fields = data[0]
     tickets = data[1]
     valid_values = data[2]
+
+    # create field indices array defaulted to false
     field_indices = []
-    
     for i in range(len(fields)):
         field_indices.append(False)
 
-    found_field = True
-    while found_field == True and False in field_indices:
-        found_field = False
+    while False in field_indices:
         # go through each field position
         for i in range(len(field_indices)):
             # get that field position's value for each ticket
@@ -114,14 +113,16 @@ def calculate_part2(data,debug=False):
                 for field in possible_fields:
                     if field not in valid_values[values[j]]:
                         possible_fields.remove(field)
+            # if we found the field, remove it from options for other indices
             if len(possible_fields) == 1:
                 field = possible_fields[0]
                 field_indices[i] = field
                 remove_field(valid_values,field)
-                found_field = True
 
-    print(field_indices)
+    if debug:
+        print(field_indices)
 
+    # multiply values of departure fields
     answer = 1
     for i in range(len(field_indices)):
         if "departure" in field_indices[i]:
@@ -141,7 +142,7 @@ def run_program(test=False, debug=False):
     data2 = discard_invalid_tickets(data, debug)
 
     # PART 2
-    calculate_part2(data2, debug)
+    determine_fields(data2, debug)
 
 # run_program(True, True)
 run_program(False, False)
