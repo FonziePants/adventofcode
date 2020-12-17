@@ -46,11 +46,6 @@ def read_data(file_path,debug=True):
 
     return (fields, tickets)
 
-def print_valid_values(valid_values):
-    print("VALID VALUES:")
-    for value in valid_values:
-        print("{0}: {1}".format(value, valid_values[value]))
-
 def remove_field(valid_values, field):
     for value in valid_values:
         if field in valid_values[value]:
@@ -71,7 +66,9 @@ def discard_invalid_tickets(data,debug=False):
                 valid_values[value] = [field.name]
     
     if debug:
-        print_valid_values(valid_values)
+        print("VALID VALUES:")
+        for value in valid_values:
+            print("{0}: {1}".format(value, valid_values[value]))
     
     error_rate = 0
     for ticket in tickets:
