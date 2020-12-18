@@ -160,5 +160,5 @@ def run_program(test=False, debug=False):
     calculate_part1(data, debug)
     calculate_part2(data, debug)
 
-# run_program(True, True)
+run_program(True, True)
 run_program()
