@@ -6,7 +6,7 @@ def read_data(file_path,debug=True):
     for line in file:
         if not line.rstrip():
             continue
-        data.append(line.strip())
+        data.append(line.rstrip().replace(" ",""))
     
     file.close()
 
@@ -63,6 +63,74 @@ def evaluate_expression(problem, debug):
 
     return answer
 
+def add_parentheses(problem, debug):
+    plus_location = problem.find("x")
+    if plus_location < 0:
+        return problem
+
+    if debug:
+        print("BEFORE:  " + problem)
+
+    # add open parenthesis
+    i = plus_location
+    idx = None
+    while i >= 0 and not idx:
+        c = problem[i]
+        if c.isdigit():
+            idx = i
+        elif c == ")":
+            p_count = 1
+            j = i-1
+            while j >= 0:
+                c2 = problem[j]
+                if c2 == ")":
+                    p_count += 1
+                elif c2 == "(":
+                    p_count -= 1
+                if p_count == 0:
+                    idx = j
+                    break
+                j -= 1
+        i -= 1
+    if not idx:
+        problem = "(" + problem
+    else:
+        problem = problem[0:idx] + "(" + problem[idx:]
+    plus_location += 1
+    
+    # add close parenthesis
+    i = plus_location
+    idx = None
+    while i < len(problem) and not idx:
+        c = problem[i]
+        if c.isdigit():
+            idx = i
+        elif c == "(":
+            p_count = 1
+            j = i+1
+            while j < len(problem):
+                c2 = problem[j]
+                if c2 == "(":
+                    p_count += 1
+                elif c2 == ")":
+                    p_count -= 1
+                if p_count == 0:
+                    idx = j
+                    break
+                j += 1
+        i += 1
+    if not idx:
+        problem = problem + ")"
+    else:
+        problem = problem[0:idx+1] + ")" + problem[idx+1:]
+
+    problem = problem[0:plus_location] + "+" + problem[plus_location+1:]
+
+    if debug:
+        print("AFTER:  " + problem)
+
+    return add_parentheses(problem,debug)
+
 def calculate_part1(data,debug=False):   
     answer = 0
     for problem in data:
@@ -73,8 +141,13 @@ def calculate_part1(data,debug=False):
     return
 
 def calculate_part2(data,debug=False):
-
-    print("Part 2: {0}\n\n".format("TODO"))
+    answer = 0
+    for problem in data:
+        problem = add_parentheses(problem.replace("+","x"),debug)
+        partial_answer = evaluate_expression(problem, debug)
+        print(partial_answer)
+        answer += partial_answer
+    print("Part 2: {0}\n\n".format(answer))
     return 
 
 def run_program(test=False, debug=False):
