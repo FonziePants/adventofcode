@@ -119,7 +119,19 @@ def calculate_part1(recipes, ingredients, allergens, debug=False):
     return
 
 def calculate_part2(recipes, ingredients, allergens, debug=False):
-    print("Part 2: {0}\n\n".format("TODO"))
+    # alphabetize allergens
+    alphabetical_allergens = list(allergens.keys())
+    alphabetical_allergens.sort()
+
+    # alphabetize ingredients
+    alphabetical_ingredients = []
+    for allergen in alphabetical_allergens:
+        alphabetical_ingredients.append(allergens[allergen])
+    
+    if debug:
+        print("Unformatted canonical dangerous ingredient list: {0}".format(alphabetical_ingredients))
+
+    print("Part 2: {0}\n\n".format(",".join(alphabetical_ingredients)))
     return 
 
 def run_program(test=False, debug=False):
@@ -134,7 +146,7 @@ def run_program(test=False, debug=False):
     allergens = data[2]
 
     calculate_part1(recipes, ingredients, allergens, debug)
-    calculate_part2(data, debug)
+    calculate_part2(recipes, ingredients, allergens, debug)
 
 # run_program(True, True)
 run_program()
