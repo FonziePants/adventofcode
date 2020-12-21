@@ -69,6 +69,13 @@ class Tile:
         
         index = self.top_index if self.flip_v else self.top_index + 2
         return self.matches[index%4]
+
+    def get_top_neighbor(self):
+        if self.top_index < 0:
+            return None
+        
+        index = self.top_index + 2 if self.flip_v else self.top_index
+        return self.matches[index%4]
     
     def get_modified_data(self):
         modified_data = self.data.copy()
@@ -94,6 +101,8 @@ class Tile:
         if flip_v:
             modified_data = list(reversed(modified_data))
         
+        print_2d("TILE {0}\n\tflip-v: {1}\n\tflip-h: {2}".format(self.id,flip_v,flip_h),modified_data)
+        
         return modified_data
     
     def get_exposed_edge_count(self):
@@ -115,8 +124,10 @@ def print_2d(title,data):
 def assemble_map(tiles, starting_corner,debug):
     map = []
     unused_tile_ids = list(tiles.keys())
+    used_tile_ids = []
     first_tile_in_row = starting_corner
     current_tile = starting_corner
+    top_row = True
 
     # get starting tile's orientation
     for i in range(4):
@@ -127,6 +138,7 @@ def assemble_map(tiles, starting_corner,debug):
 
     row_section = current_tile.get_modified_data()
     unused_tile_ids.remove(current_tile.id)
+    used_tile_ids.append(current_tile.id)
     if debug:
             print("Adding tile {0}\n\ttop:   {1}\n\tflip h: {2}\n\tflip v: {3}\n\tmatches: {4}\n".format(current_tile.id, current_tile.top_index, current_tile.flip_h, current_tile.flip_v, current_tile.matches))
 
@@ -144,6 +156,7 @@ def assemble_map(tiles, starting_corner,debug):
             flip_v = first_tile_in_row.flip_v
             # get the tile below the first tile in the row
             new_row = True
+            top_row = False
             match_info = first_tile_in_row.get_bottom_neighbor()
 
         current_tile = tiles[match_info[0]]
@@ -160,6 +173,10 @@ def assemble_map(tiles, starting_corner,debug):
                 flip_v = not flip_v
             current_tile.flip_v = flip_v
             current_tile.top_index = (left_index + 1)%4
+            if not top_row: 
+                top_neighbor = current_tile.get_top_neighbor() 
+                if top_neighbor not in used_tile_ids:
+                    current_tile.flip_v = True
 
         if debug:
             print("Adding tile {0}\n\ttop:   {1}\n\tflip h: {2}\n\tflip v: {3}\n\tmatches: {4}\n\tlogic:   {5}\n".format(current_tile.id, current_tile.top_index, current_tile.flip_h, current_tile.flip_v, current_tile.matches, match_info))
@@ -174,6 +191,7 @@ def assemble_map(tiles, starting_corner,debug):
                 row_section[r] += tile_data[r]
 
         unused_tile_ids.remove(current_tile.id)
+        used_tile_ids.append(current_tile.id)
     
     for row in row_section:
         map.append(row)
@@ -219,9 +237,7 @@ def calculate_part1(tiles,debug=False):
 
 def calculate_part2(data,debug=False):
     tiles = data[0]
-    map = assemble_map(tiles, tiles[1951],debug)
-    # map = assemble_map(tiles, tiles[2971],debug)
-    # map = assemble_map(tiles, data[1], debug)
+    map = assemble_map(tiles, data[1], debug)
     print("Part 2: {0}\n\n".format("TODO"))
     return 
 
