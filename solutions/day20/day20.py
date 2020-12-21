@@ -51,15 +51,32 @@ class Tile:
             self.data[r] = self.data[r][1:-1]
 
         self.matches = [None, None, None, None]
+
+        self.top_index = -1
+        self.flip_h = False
+        self.flip_v = False
     
-    def get_modified_data(self, rotate, flip):
+    def get_right_neighbor(self):
+        if self.top_index < 0:
+            return None
+        
+        index = self.top_index + 3 if self.flip_h else self.top_index + 1
+        return self.matches[index%4]
+    
+    def get_bottom_neighbor(self):
+        if self.top_index < 0:
+            return None
+        
+        index = self.top_index if self.flip_v else self.top_index + 2
+        return self.matches[index%4]
+    
+    def get_modified_data(self):
         modified_data = self.data.copy()
 
-        flip_h = (rotate >= 2)
-        flip_v = (rotate >= 2)
+        rotate = 4 - self.top_index
 
-        if flip:
-            flip_h = not flip_h
+        flip_h = (rotate >= 2 and not self.flip_h) or (rotate < 2 and self.flip_h)
+        flip_v = (rotate >= 2 and not self.flip_v) or (rotate < 2 and self.flip_v)
 
         # swap axes if rotating 90 or 270 degrees
         if rotate % 2 == 1:
@@ -100,60 +117,58 @@ def assemble_map(tiles, starting_corner,debug):
     unused_tile_ids = list(tiles.keys())
     first_tile_in_row = starting_corner
     current_tile = starting_corner
-    rotate = 0
-    rotate_row = 0
-    flip = False
-    flip_row = False
 
     # get starting tile's orientation
     for i in range(4):
         if not current_tile.matches[i] and not current_tile.matches[(i+3)%4]:
-            rotate = (i+2)%4
-            rotate_row = rotate
+            current_tile.top_index = i
+            current_tile.flip = False
             break
 
-    row_section = current_tile.get_modified_data(rotate, flip)
+    row_section = current_tile.get_modified_data()
     unused_tile_ids.remove(current_tile.id)
     if debug:
-            print("Adding tile {0}\n\trotate: {1}\n\tflip: {2}".format(current_tile.id,rotate,flip))
+            print("Adding tile {0}\n\ttop:   {1}\n\tflip h: {2}\n\tflip v: {3}\n\tmatches: {4}\n".format(current_tile.id, current_tile.top_index, current_tile.flip_h, current_tile.flip_v, current_tile.matches))
 
     while len(unused_tile_ids) > 0:
         new_row = False
-        target = current_tile
-        match_info = current_tile.matches[(rotate+3)%4] 
+        flip_h = current_tile.flip_h
+        flip_v = current_tile.flip_v
+        match_info = current_tile.get_right_neighbor()
         if (not match_info):
             # add the row section
             for row in row_section:
                 map.append(row)
             row_section = []
+            flip_h = first_tile_in_row.flip_h
+            flip_v = first_tile_in_row.flip_v
             # get the tile below the first tile in the row
             new_row = True
-            target = first_tile_in_row
-            rotate = rotate_row
-            flip = flip_row
-            match_info = first_tile_in_row.matches[(rotate)%4] 
+            match_info = first_tile_in_row.get_bottom_neighbor()
 
         current_tile = tiles[match_info[0]]
-        rotate = (rotate + match_info[1]) % 4
-        if match_info[2]:
-            flip = not flip
+
+        if new_row:
+            top_index = match_info[1]
+            if match_info[2]:
+                flip_h = not flip_h
+            current_tile.flip_h = flip_h
+            current_tile.top_index = (top_index)%4
+        else:
+            left_index = match_info[1]
+            if match_info[2]:
+                flip_v = not flip_v
+            current_tile.flip_v = flip_v
+            current_tile.top_index = (left_index + 1)%4
 
         if debug:
-            print("Rotate to determine match: {0}".format((rotate - match_info[1]+4)%4))
-            print("Matches for {0}: {1}".format(target.id,target.matches))
-            print("Adding tile {0}\n\trotate: {1}\n\tflip: {2}".format(current_tile.id,rotate,flip))
+            print("Adding tile {0}\n\ttop:   {1}\n\tflip h: {2}\n\tflip v: {3}\n\tmatches: {4}\n\tlogic:   {5}\n".format(current_tile.id, current_tile.top_index, current_tile.flip_h, current_tile.flip_v, current_tile.matches, match_info))
 
-        tile_data = current_tile.get_modified_data(rotate, flip)
-
-        if match_info[2] and match_info[1] % 2 == 0:
-            rotate += 2
-            rotate %= 4
+        tile_data = current_tile.get_modified_data()
 
         if new_row:
             row_section = tile_data
             first_tile_in_row = current_tile
-            rotate_row = rotate
-            flip_row = flip
         else:
             for r in range(len(row_section)):
                 row_section[r] += tile_data[r]
@@ -181,12 +196,12 @@ def calculate_part1(tiles,debug=False):
             for e1 in range(len(tile1.edges)):
                 for e2 in range(len(tile2.edges)):
                     if (tile1.edges[e1] == tile2.edges[e2]):
-                        tile1.matches[e1] = (t2,(e1-e2+4)%4,False)
-                        tile2.matches[e2] = (t1,(e1-e2+4)%4,False)
+                        tile1.matches[e1] = (t2,e2,True)
+                        tile2.matches[e2] = (t1,e1,True)
                         
                     elif (tile1.edges[e1] == tile2.edges[e2][::-1]):
-                        tile1.matches[e1] = (t2,(e1-e2+4)%4,True)
-                        tile2.matches[e2] = (t1,(e1-e2+4)%4,True)
+                        tile1.matches[e1] = (t2,e2,False)
+                        tile2.matches[e2] = (t1,e1,False)
     
     corners_product = 1
     starting_corner = None
@@ -205,7 +220,8 @@ def calculate_part1(tiles,debug=False):
 def calculate_part2(data,debug=False):
     tiles = data[0]
     map = assemble_map(tiles, tiles[1951],debug)
-    # map = assemble_map(tiles, data[1],debug)
+    # map = assemble_map(tiles, tiles[2971],debug)
+    # map = assemble_map(tiles, data[1], debug)
     print("Part 2: {0}\n\n".format("TODO"))
     return 
 
