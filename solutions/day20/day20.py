@@ -180,6 +180,7 @@ def assemble_map(tiles, starting_corner,debug):
             top_row = False
             match_info = first_tile_in_row.get_bottom_neighbor()
 
+        previous_tile = current_tile
         current_tile = tiles[match_info[0]]
 
         if new_row:
@@ -190,14 +191,10 @@ def assemble_map(tiles, starting_corner,debug):
             current_tile.top_index = (top_index)%4
         else:
             left_index = match_info[1]
-            if match_info[2]:
+            if (match_info[2] and not previous_tile.flip_h) or (not match_info[2] and previous_tile.flip_h):
                 flip_v = not flip_v
             current_tile.flip_v = flip_v
             current_tile.top_index = (left_index + 1)%4
-            # if not top_row: 
-            #     top_neighbor = current_tile.get_top_neighbor() 
-            #     if top_neighbor not in used_tile_ids:
-            #         current_tile.flip_v = True
 
         if debug:
             print("Adding tile {0}\n\ttop:   {1}\n\tflip h: {2}\n\tflip v: {3}\n\tmatches: {4}\n\tlogic:   {5}\n".format(current_tile.id, current_tile.top_index, current_tile.flip_h, current_tile.flip_v, current_tile.matches, match_info))
@@ -241,7 +238,7 @@ def match_monster(map,monster):
                     row = map_row+monster_row
                     col = map_col+monster_col
                     map_string = new_map[row]
-                    new_map[row] = map_string[0:col] + "O" + map_string[col+1:]
+                    new_map[row] = map_string[0:col] + "🐉" + map_string[col+1:]
                 if not found_monster:
                     break
             if found_monster:
@@ -259,13 +256,12 @@ def calculate_part1(tiles,debug=False):
 
             for e1 in range(len(tile1.edges)):
                 for e2 in range(len(tile2.edges)):
-                    if (tile1.edges[e1] == tile2.edges[e2]):
-                        tile1.matches[e1] = (t2,e2,True)
-                        tile2.matches[e2] = (t1,e1,True)
-                        
-                    elif (tile1.edges[e1] == tile2.edges[e2][::-1]):
+                    if (tile1.edges[e1] == tile2.edges[e2][::-1]):
                         tile1.matches[e1] = (t2,e2,False)
                         tile2.matches[e2] = (t1,e1,False)
+                    elif (tile1.edges[e1] == tile2.edges[e2]):
+                        tile1.matches[e1] = (t2,e2,True)
+                        tile2.matches[e2] = (t1,e1,True)  
     
     corners_product = 1
     starting_corner = None
