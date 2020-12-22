@@ -31,6 +31,20 @@ def read_data(file_path,debug=True):
 
     return data
 
+def read_sea_monster():
+    file = open("solutions\day20\seamonster.txt", "r")
+
+    monster = []
+
+    for line in file:
+        if not line.rstrip():
+            continue
+        monster.append(line[:-1])
+    
+    file.close()
+
+    return monster
+
 class Tile:
     def __init__(self, id, data):
         self.id = id
@@ -80,19 +94,13 @@ class Tile:
     def get_modified_data(self):
         modified_data = self.data.copy()
 
-        rotate = 4 - self.top_index
+        rotate = (4 - self.top_index) % 4
 
-        flip_h = (rotate >= 2 and not self.flip_h) or (rotate < 2 and self.flip_h)
-        flip_v = (rotate >= 2 and not self.flip_v) or (rotate < 2 and self.flip_v)
+        flip_h = self.flip_h
+        flip_v = self.flip_v
 
-        # swap axes if rotating 90 or 270 degrees
-        if rotate % 2 == 1:
-            modified_data = []
-            for c in range(len(self.data[0])):
-                row = ""
-                for r in reversed(range(len(self.data))):
-                    row += self.data[r][c]
-                modified_data.append(row)
+        for i in range(rotate):
+            modified_data = rotate_map(modified_data)
 
         if flip_h:
             for r in range(len(modified_data)):
@@ -101,7 +109,7 @@ class Tile:
         if flip_v:
             modified_data = list(reversed(modified_data))
         
-        print_2d("TILE {0}\n\tflip-v: {1}\n\tflip-h: {2}".format(self.id,flip_v,flip_h),modified_data)
+        print_2d(self.id,modified_data)
         
         return modified_data
     
@@ -120,6 +128,19 @@ def print_2d(title,data):
     for row in data:
         print(row)
     print()
+
+def rotate_map(map):
+    new_map = []
+    for c in range(0,len(map[0])):
+        row = ""
+        for r in reversed(range(0,len(map))):
+            row += map[r][c]
+        new_map.append(row)
+
+    return new_map
+
+def flip_map(map):
+    return list(reversed(map))
 
 def assemble_map(tiles, starting_corner,debug):
     map = []
@@ -173,10 +194,10 @@ def assemble_map(tiles, starting_corner,debug):
                 flip_v = not flip_v
             current_tile.flip_v = flip_v
             current_tile.top_index = (left_index + 1)%4
-            if not top_row: 
-                top_neighbor = current_tile.get_top_neighbor() 
-                if top_neighbor not in used_tile_ids:
-                    current_tile.flip_v = True
+            # if not top_row: 
+            #     top_neighbor = current_tile.get_top_neighbor() 
+            #     if top_neighbor not in used_tile_ids:
+            #         current_tile.flip_v = True
 
         if debug:
             print("Adding tile {0}\n\ttop:   {1}\n\tflip h: {2}\n\tflip v: {3}\n\tmatches: {4}\n\tlogic:   {5}\n".format(current_tile.id, current_tile.top_index, current_tile.flip_h, current_tile.flip_v, current_tile.matches, match_info))
@@ -197,11 +218,36 @@ def assemble_map(tiles, starting_corner,debug):
         map.append(row)
     
     if debug:
+        print(used_tile_ids)
         print("MAP")
         for row in map:
             print(row)
 
     return map
+
+def match_monster(map,monster):
+    monster_count = 0
+    for map_row in range(0,len(map)-len(monster)):
+        for map_col in range(0,len(map[0])-len(monster[0])):
+            new_map = map.copy()
+            found_monster = True
+            for monster_row in range(0,len(monster)):
+                for monster_col in range(0,len(monster[0])):
+                    if monster[monster_row][monster_col] != "#":
+                        continue
+                    elif map[map_row+monster_row][map_col+monster_col] != "#":
+                        found_monster = False
+                        break
+                    row = map_row+monster_row
+                    col = map_col+monster_col
+                    map_string = new_map[row]
+                    new_map[row] = map_string[0:col] + "O" + map_string[col+1:]
+                if not found_monster:
+                    break
+            if found_monster:
+                map = new_map
+                monster_count += 1
+    return (map,monster_count)
 
 def calculate_part1(tiles,debug=False): 
     for t1 in tiles:
@@ -238,7 +284,27 @@ def calculate_part1(tiles,debug=False):
 def calculate_part2(data,debug=False):
     tiles = data[0]
     map = assemble_map(tiles, data[1], debug)
-    print("Part 2: {0}\n\n".format("TODO"))
+    monster = read_sea_monster()
+    monster_count = 0
+
+    for j in range(0,2):
+        for i in range(0,4):
+            round = match_monster(map,monster)
+            map = round[0]
+            monster_count += round[1]
+            if debug:
+                print_2d("MAP {0}".format((i+1)+(4*j)),map)
+            map = rotate_map(map)
+        map = flip_map(map)
+
+    if debug:
+        print("{0} monsters!! 🐉".format(monster_count))
+    
+    water_count = 0
+    for row in map:
+        water_count += row.count("#")
+
+    print("Part 2: {0}\n\n".format(water_count))
     return 
 
 def run_program(test=False, debug=False):
@@ -251,5 +317,5 @@ def run_program(test=False, debug=False):
     data2 = calculate_part1(data, debug)
     calculate_part2(data2, debug)
 
-run_program(True, True)
-# run_program()
+# run_program(True, True)
+run_program(False,True)
