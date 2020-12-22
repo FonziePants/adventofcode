@@ -1,3 +1,4 @@
+
 def read_data(file_path,debug=True):
     file = open(file_path, "r")
 
@@ -37,6 +38,15 @@ def condense_rule(rules,r):
         if part == "|":
             simplified_rule.append(part)
             has_option = True
+        elif r == int(part):
+            # oh no! it's a loop! CRY!!!
+            if r == 8:
+                simplified_rule.append("&")
+            elif r == 11:
+                simplified_rule.append("#")
+            else:
+                simplified_rule.append("_")
+                
         else:
             condensed_rule = condense_rule(rules,int(part))
             simplified_rule.append(condensed_rule)
@@ -91,18 +101,59 @@ def calculate_part1(data,debug=False):
 
     matches = 0
     round = 0
+    unmatched = []
     for message in data[1]:
         round += 1
         print("Round {0}".format(round))
         if message in options:
             matches += 1
+        else:
+            unmatched.append(message)
 
     print("Part 1: {0}\n\n".format(matches))
-    return
+    return (data[0],unmatched,matches)
 
 def calculate_part2(data,debug=False):
+    rule8 = [42, "|", 42, 8]
+    rule11 = [42, 31, "|", 42, 11, 31]
+    data[0][8] = rule8
+    data[0][11] = rule11
 
-    print("Part 2: {0}\n\n".format("TODO"))
+    rule0 = condense_rule(data[0],0)
+    rule31 = condense_rule(data[0],31)
+    rule42 = condense_rule(data[0],42)
+
+    if debug:
+        print("Rule  0: {0}".format(rule0))
+        print("Rule 31: {0}".format(rule31))
+        print("Rule 42: {0}".format(rule42))
+    
+    options = enumerate_options(rule0)
+    new_options = []
+    min_len = 100
+    max_len = 0
+    for option in options:
+        if "_" in option:
+            new_options.append(option)
+            l = len(option)
+            if lh > max_len:
+                max_len = l
+            elif l > min_len:
+                min_len = l
+    options = new_options
+    if debug:
+        print("{0} Options".format(len(options)))
+        print("Range: {0} - {1}".format(min_len, max_len))
+
+    matches = data[2]
+    round = 0
+    for message in data[1]:
+        round += 1
+        print("Round {0}".format(round))
+        if message in options:
+            matches += 1
+    
+    print("Part 2: {0}\n\n".format(matches))
     return 
 
 def run_program(test=False, debug=False):
@@ -112,8 +163,8 @@ def run_program(test=False, debug=False):
     
     data = read_data(file_path, debug)
 
-    calculate_part1(data, debug)
+    data = calculate_part1(data, False)
     calculate_part2(data, debug)
 
-# run_program(True, True)
-run_program()
+run_program(True, True)
+# run_program()
