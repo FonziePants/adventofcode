@@ -75,6 +75,8 @@
 
 I was going to wait until tomorrow, but I discovered that my roommate had skipped yesterday's puzzle and was trying to edge me out on this one for the extra stars! I jumped into action and managed to knock out Part 1 in about ten minutes. Luckily for me, Part 1 was doable with simple python string manipulation, of which I had learned the syntax over the past couple weeks.
 
+🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
+
 ## Part 1
 >Using your labeling, simulate 100 moves. What are the labels on the cups after cup 1?
 >
@@ -185,7 +187,7 @@ class Node:
 
 Nothing special, clearly.
 
-Then, my `LinkedList` class had a convoluted constructor that initialized the data and absolutely _zero_ convenience methods:
+Then, my `LinkedList` class had a convoluted constructor that initialized the data and had absolutely _zero_ convenience methods:
 ```
 class LinkedList:
     def __init__(self,starting,max):
@@ -274,3 +276,5 @@ def calculate_part2(data,debug=False):
 The good news for this trainwreck of a solution? I finished first on my private leaderboard, putting me in a solid second place with a possibility of winning overall if I can sabotage my husband over the next two days...
 
 Stay tuned 😎
+
+🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀🦀
