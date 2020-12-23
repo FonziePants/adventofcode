@@ -107,7 +107,7 @@ class Tile:
                 modified_data[r] = modified_data[r][::-1]
         
         if flip_v:
-            modified_data = list(reversed(modified_data))
+            modified_data = flip_map(modified_data)
         
         print_2d(self.id,modified_data)
         
@@ -148,7 +148,6 @@ def assemble_map(tiles, starting_corner,debug):
     used_tile_ids = []
     first_tile_in_row = starting_corner
     current_tile = starting_corner
-    top_row = True
 
     # get starting tile's orientation
     for i in range(4):
@@ -177,7 +176,6 @@ def assemble_map(tiles, starting_corner,debug):
             flip_v = first_tile_in_row.flip_v
             # get the tile below the first tile in the row
             new_row = True
-            top_row = False
             match_info = first_tile_in_row.get_bottom_neighbor()
 
         previous_tile = current_tile
