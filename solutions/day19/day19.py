@@ -24,7 +24,7 @@ def read_data(file_path,debug=True):
 
     return data
 
-def condense_rule(rules,r):
+def condense_rule(rules,r,counters):
     rule = rules[r]
 
     if len(rule) == 1 and "\"" in rule[0]:
@@ -38,20 +38,24 @@ def condense_rule(rules,r):
         if part == "|":
             simplified_rule.append(part)
             has_option = True
-        elif r == int(part):
-            # oh no! it's a loop! CRY!!!
-            if r == 8:
-                simplified_rule.append("&")
-            elif r == 11:
-                simplified_rule.append("#")
+            continue
+
+        # check for loops
+        if r == int(part):
+            if r not in counters: 
+                counters[r] = 1
             else:
-                simplified_rule.append("_")
+                counters[r] += 1
+
+            # skip it if we're already deep
+            if counters[r] > 20:
+                simplified_rule.append("⛔")
+                continue
                 
-        else:
-            condensed_rule = condense_rule(rules,int(part))
-            simplified_rule.append(condensed_rule)
-            if isinstance(condensed_rule,list):
-                is_flat = False
+        condensed_rule = condense_rule(rules,int(part),counters)
+        simplified_rule.append(condensed_rule)
+        if isinstance(condensed_rule,list):
+            is_flat = False
 
     if is_flat:
         simplified_rule = "".join(simplified_rule) 
@@ -60,97 +64,91 @@ def condense_rule(rules,r):
     
     return simplified_rule
 
-def enumerate_options(rule):
-    if len(rule) == 1 and isinstance(rule[0],str):
-        if "|" in rule[0]:
-            return rule[0].split("|")
-        return rule
+def evaluate_message(rule,message,full):
+    if len(rule) == 1 and isinstance(rule[0],str) and "|" in rule[0]:
+        parts = rule[0].split("|")
+        options = []
+        for part in parts:
+            if len(part) <= len(message) and part == message[:len(part)]:
+                if len(options) > 0:
+                    options.append("|")
+                    options.append(part)
+                else:
+                    options.append(part)
+        return options
     
     if "|" in rule:
-        bar = rule.index("|")
-        options = enumerate_options(rule[0:bar])
-        options += enumerate_options(rule[bar+1:])
+        options = []
+        new_rule = rule.copy()
+        while True:
+            bar = new_rule.index("|")
+            options += evaluate_message(new_rule[0:bar],message,message)
+
+            if "|" in new_rule[bar+1:]:
+                new_rule = new_rule[bar+1:]
+            else:
+                options += evaluate_message(new_rule[bar+1:],message,message)
+                break
         return options
 
-    options = [""]
-
+    idx = 0
     for part in rule:
+        if idx > len(message):
+            return []
+
         if "|" in part or isinstance(part,list):
-            suboptions = enumerate_options(part)
-            new_options = []
-            for option in options:
-                for suboption in suboptions:
-                    new_options.append(option + suboption)
-            options = new_options
+            options = evaluate_message(part,message[idx:],message)
+            if len(options) == 0:
+                return options
+            else:
+                part = options[0]
+
+        if len(part) <= len(message[idx:]):
+            if part != message[idx:idx+len(part)]:
+                return []
+            idx += len(part)
         else:
-            new_options = []
-            for option in options:
-                new_options.append(option + part)
-            options = new_options
-    return options
+            return []
+
+    return [message[:idx]]
 
 def calculate_part1(data,debug=False):   
-    rule0 = condense_rule(data[0],0)
-    options = enumerate_options(rule0)
-
-    if debug:
-        print("Rule 0: {0}".format(rule0))
-        print("Options:")
-        for option in options:
-            print("  {0}".format(option))
+    rule0 = condense_rule(data[0],0,{})
 
     matches = 0
-    round = 0
-    unmatched = []
     for message in data[1]:
-        round += 1
-        print("Round {0}".format(round))
-        if message in options:
+        result = evaluate_message(rule0, message, message)
+        if len(result) > 0 and result[0] == message:
+            print(message)
             matches += 1
-        else:
-            unmatched.append(message)
 
     print("Part 1: {0}\n\n".format(matches))
-    return (data[0],unmatched,matches)
 
 def calculate_part2(data,debug=False):
     rule8 = [42, "|", 42, 8]
     rule11 = [42, 31, "|", 42, 11, 31]
+    # rule8 = [42]
+    # rule11 = [42, 31]
+    # for i in range(0,10):
+    #     rule8.append("|")
+    #     rule11.append("|")
+    #     for j in range(i+2):
+    #         rule8.append(42)
+    #         rule11.append(42)
+    #     for j in range(i+2):
+    #         rule11.append(31)
+    # print(rule8)
+    # print()
+    # print(rule11)
     data[0][8] = rule8
     data[0][11] = rule11
+    rule0 = condense_rule(data[0],0,{})
 
-    rule0 = condense_rule(data[0],0)
-    rule31 = condense_rule(data[0],31)
-    rule42 = condense_rule(data[0],42)
-
-    if debug:
-        print("Rule  0: {0}".format(rule0))
-        print("Rule 31: {0}".format(rule31))
-        print("Rule 42: {0}".format(rule42))
-    
-    options = enumerate_options(rule0)
-    new_options = []
-    min_len = 100
-    max_len = 0
-    for option in options:
-        if "_" in option:
-            new_options.append(option)
-            l = len(option)
-            if lh > max_len:
-                max_len = l
-            elif l > min_len:
-                min_len = l
-    options = new_options
-    if debug:
-        print("{0} Options".format(len(options)))
-        print("Range: {0} - {1}".format(min_len, max_len))
-
-    matches = data[2]
-    round = 0
+    matches = 0
     for message in data[1]:
-        round += 1
-        print("Round {0}".format(round))
-        if message in options:
+        result = evaluate_message(rule0, message, message)
+        if len(result) > 0 and result[0] == message:
+            print(message)
             matches += 1
     
     print("Part 2: {0}\n\n".format(matches))
@@ -163,8 +161,8 @@ def run_program(test=False, debug=False):
     
     data = read_data(file_path, debug)
 
-    data = calculate_part1(data, False)
+    calculate_part1(data, debug)
     calculate_part2(data, debug)
 
-run_program(True, True)
-# run_program()
+# run_program(True, True)
+run_program()
