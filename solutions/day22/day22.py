@@ -74,7 +74,6 @@ class Player:
 
 def play_game(player1, player2, round_outcomes, debug=False):
     past_rounds = []
-    winner = None
 
     if debug:
         print("NEW GAME")
