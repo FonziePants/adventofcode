@@ -125,31 +125,28 @@ def calculate_part1(data,debug=False):
     print("Part 1: {0}\n\n".format(matches))
 
 def calculate_part2(data,debug=False):
-    rule8 = [42, "|", 42, 8]
-    rule11 = [42, 31, "|", 42, 11, 31]
-    # rule8 = [42]
-    # rule11 = [42, 31]
-    # for i in range(0,10):
-    #     rule8.append("|")
-    #     rule11.append("|")
-    #     for j in range(i+2):
-    #         rule8.append(42)
-    #         rule11.append(42)
-    #     for j in range(i+2):
-    #         rule11.append(31)
-    # print(rule8)
-    # print()
-    # print(rule11)
-    data[0][8] = rule8
-    data[0][11] = rule11
-    rule0 = condense_rule(data[0],0,{})
-
     matches = 0
-    for message in data[1]:
-        result = evaluate_message(rule0, message, message)
-        if len(result) > 0 and result[0] == message:
-            print(message)
-            matches += 1
+    unknown_messages = data[1].copy()
+    for i8 in range(5):
+        for i11 in range(5):
+            rule8 = ['42']
+            rule11 = ['42', '31']
+            for j8 in range(i8):
+                rule8.append('42')
+            for j11 in range(i11):
+                rule11 = ['42'] + rule11 + ['31']
+            data[0][8] = rule8
+            data[0][11] = rule11
+
+            rule0 = condense_rule(data[0],0,{})
+            u_messages = unknown_messages.copy()
+            for message in unknown_messages:
+                result = evaluate_message(rule0, message, message)
+                if len(result) > 0 and result[0] == message:
+                    print(message)
+                    matches += 1
+                    u_messages.remove(message)
+            unknown_messages = u_messages
     
     print("Part 2: {0}\n\n".format(matches))
     return 
