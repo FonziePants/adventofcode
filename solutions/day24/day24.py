@@ -1,5 +1,3 @@
-ALL_DIRECTIONS = ["e", "ne", "nw", "w", "sw", "se"]
-
 def read_data(file_path,debug=True):
     file = open(file_path, "r")
 
@@ -16,10 +14,6 @@ def read_data(file_path,debug=True):
         print(data)
 
     return data
-
-def get_opposite_direction(dir):
-    idx = ALL_DIRECTIONS.index(dir)
-    return ALL_DIRECTIONS[(idx + 3)%6]
 
 def get_coordinates(dir):
     x=0
@@ -52,7 +46,7 @@ def get_adjacent_ids(id):
     neighbors = []
 
     coord = get_x_y(id)
-    for dir in ALL_DIRECTIONS:
+    for dir in ["e", "ne", "nw", "w", "sw", "se"]:
         delta = get_coordinates(dir)
         neighbors.append(get_id(coord[0]+delta[0],coord[1]+delta[1]))
 
@@ -106,7 +100,6 @@ def print_tiles(tiles):
 class HexTile:
     def __init__(self,x,y):
         self.id = get_id(x,y)
-        self.location = (x,y)
         self.white_side_up = True
     
     def flip(self):
