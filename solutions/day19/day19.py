@@ -64,7 +64,7 @@ def condense_rule(rules,r,counters):
     
     return simplified_rule
 
-def evaluate_message(rule,message,full):
+def evaluate_message(rule,message):
     if len(rule) == 1 and isinstance(rule[0],str) and "|" in rule[0]:
         parts = rule[0].split("|")
         options = []
@@ -82,12 +82,12 @@ def evaluate_message(rule,message,full):
         new_rule = rule.copy()
         while True:
             bar = new_rule.index("|")
-            options += evaluate_message(new_rule[0:bar],message,message)
+            options += evaluate_message(new_rule[0:bar],message)
 
             if "|" in new_rule[bar+1:]:
                 new_rule = new_rule[bar+1:]
             else:
-                options += evaluate_message(new_rule[bar+1:],message,message)
+                options += evaluate_message(new_rule[bar+1:],message)
                 break
         return options
 
@@ -97,7 +97,7 @@ def evaluate_message(rule,message,full):
             return []
 
         if "|" in part or isinstance(part,list):
-            options = evaluate_message(part,message[idx:],message)
+            options = evaluate_message(part,message[idx:])
             if len(options) == 0:
                 return options
             else:
@@ -117,7 +117,7 @@ def calculate_part1(data,debug=False):
 
     matches = 0
     for message in data[1]:
-        result = evaluate_message(rule0, message, message)
+        result = evaluate_message(rule0, message)
         if len(result) > 0 and result[0] == message:
             print(message)
             matches += 1
@@ -141,7 +141,7 @@ def calculate_part2(data,debug=False):
             rule0 = condense_rule(data[0],0,{})
             u_messages = unknown_messages.copy()
             for message in unknown_messages:
-                result = evaluate_message(rule0, message, message)
+                result = evaluate_message(rule0, message)
                 if len(result) > 0 and result[0] == message:
                     print(message)
                     matches += 1
