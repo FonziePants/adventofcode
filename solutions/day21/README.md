@@ -50,62 +50,62 @@ For the ingredient-allergen pairings, I decided to create two maps, `ingredients
 First, I created an `allergen_ingredient_map` dictionary where the key is the allergen and the value is the array of candidate ingredients. The steps to construct this were as follows:
 
 1. **Create an `allergen_recipe_map`** (where key = allergen, value = collection of recipes with allergen) to make ingredient-gathering easier.
-```
-allergen_recipe_map = {}
-for allergen in allergens:
-    # find all recipes with the allergen
-    recipes_with_allergen = []
-    for recipe in recipes:
-        if recipe.contains_allergen(allergen):
-            recipes_with_allergen.append(recipe)
-    allergen_recipe_map[allergen] = recipes_with_allergen
-```
+    ```
+    allergen_recipe_map = {}
+    for allergen in allergens:
+        # find all recipes with the allergen
+        recipes_with_allergen = []
+        for recipe in recipes:
+            if recipe.contains_allergen(allergen):
+                recipes_with_allergen.append(recipe)
+        allergen_recipe_map[allergen] = recipes_with_allergen
+    ```
 
 2. **Create initial lists of all possible ingredients per allergen**. In the same allergen for-loop as above:
-```
-# find all candidate ingredients that may have said allergen
-possible_ingredients = recipes_with_allergen[0].ingredients.copy()
-for r in range(1,len(recipes_with_allergen)):
-    new_possible_ingredients = []
-    for ingredient in possible_ingredients:
-        if ingredient in recipes_with_allergen[r].ingredients and not ingredients[ingredient]:
-            new_possible_ingredients.append(ingredient)
-    possible_ingredients = new_possible_ingredients
-```
+    ```
+    # find all candidate ingredients that may have said allergen
+    possible_ingredients = recipes_with_allergen[0].ingredients.copy()
+    for r in range(1,len(recipes_with_allergen)):
+        new_possible_ingredients = []
+        for ingredient in possible_ingredients:
+            if ingredient in recipes_with_allergen[r].ingredients and not ingredients[ingredient]:
+                new_possible_ingredients.append(ingredient)
+        possible_ingredients = new_possible_ingredients
+    ```
 
 3. **For any allergen that results in only one possible ingredient during the first pass, update the original `allergens` and `ingredients` dictionaries!** But make sure _not_ to add it to the `allergen_ingredient_map`, because that data structure is only for allergens whose ingredients are still unknown.
-```
-if len(possible_ingredients) == 1:
-    ingredient = possible_ingredients[0]
-    ingredients[ingredient] = allergen
-    allergens[allergen] = ingredient
-```
+    ```
+    if len(possible_ingredients) == 1:
+        ingredient = possible_ingredients[0]
+        ingredients[ingredient] = allergen
+        allergens[allergen] = ingredient
+    ```
 
 4. **Otherwise, add the potential ingredient list to the `allergen_ingredient_map`**, which will be whiddled down later.
-```
-else:
-    allergen_ingredient_map[allergen] = possible_ingredients
-```
+    ```
+    else:
+        allergen_ingredient_map[allergen] = possible_ingredients
+    ```
 
 5. **Repeat steps 2 & 3 (while also excluding any already-claimed ingredients) until the number of unidentified allergen-ingredient pairs drops down to zero**.
-```
-# go through again and remove duplicates
-    while len(allergen_ingredient_map) > 0:
-        new_allergen_ingredient_map = {}
-        for allergen in allergen_ingredient_map:
-            possible_ingredients = []
-            for ingredient in allergen_ingredient_map[allergen]:
-                # don't add already-claimed ingredients
-                if not ingredients[ingredient]:
-                    possible_ingredients.append(ingredient)
-            if len(possible_ingredients) == 1:
-                ingredient = possible_ingredients[0]
-                ingredients[ingredient] = allergen
-                allergens[allergen] = ingredient
-            else:
-                new_allergen_ingredient_map[allergen] = possible_ingredients
-        allergen_ingredient_map = new_allergen_ingredient_map
-```
+    ```
+    # go through again and remove duplicates
+        while len(allergen_ingredient_map) > 0:
+            new_allergen_ingredient_map = {}
+            for allergen in allergen_ingredient_map:
+                possible_ingredients = []
+                for ingredient in allergen_ingredient_map[allergen]:
+                    # don't add already-claimed ingredients
+                    if not ingredients[ingredient]:
+                        possible_ingredients.append(ingredient)
+                if len(possible_ingredients) == 1:
+                    ingredient = possible_ingredients[0]
+                    ingredients[ingredient] = allergen
+                    allergens[allergen] = ingredient
+                else:
+                    new_allergen_ingredient_map[allergen] = possible_ingredients
+            allergen_ingredient_map = new_allergen_ingredient_map
+    ```
 
 ### The solution
 The final answer to Part 1 was as simple as looping through each ingredient and incrementing a counter for each time a recipe contains it.
@@ -140,23 +140,23 @@ good_ingredients_appearances = 0
 After two puzzle days where I felt Parts 2 were much more complex than Parts 1, I was super excited to find that today's Part 2 was extremely simple. Because I already had stored the allergen-ingredient pairs in simple dictionaries, alphabetizing the ingredient list was extremely trivial.
 
 1. **Alphabetize allergens**. I put the `allergens` keys in a list and ran it through `.sort()`. Easy peasy.
-```
-# alphabetize allergens
-alphabetical_allergens = list(allergens.keys())
-alphabetical_allergens.sort()
-```
+    ```
+    # alphabetize allergens
+    alphabetical_allergens = list(allergens.keys())
+    alphabetical_allergens.sort()
+    ```
 
 2. **List out ingredients with respect to alphabetized allergens**. I looped through the above sorted list and created a new list ingredient by ingredient.
-```
-# alphabetize ingredients
-alphabetical_ingredients = []
-for allergen in alphabetical_allergens:
-    alphabetical_ingredients.append(allergens[allergen])
-```
+    ```
+    # alphabetize ingredients
+    alphabetical_ingredients = []
+    for allergen in alphabetical_allergens:
+        alphabetical_ingredients.append(allergens[allergen])
+    ```
 
 3. **Format it**. One line in Python, that's it.
-```
-",".join(alphabetical_ingredients)
-```
+    ```
+    ",".join(alphabetical_ingredients)
+    ```
 
 😎
