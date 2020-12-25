@@ -144,30 +144,30 @@ class Player:
 
 The logic here was pretty simple:
 1. **Loop while both of the players still have cards in their hand**, as determined by the aforementioned `Player.has_cards()` convenience method
-```
-while player1.has_cards() and player2.has_cards():
-```
+    ```
+    while player1.has_cards() and player2.has_cards():
+    ```
 
 2. **Grab the top cards from each player's hand** using the convenience method `Player.play_card()`, which handles mutating the deck.
-```
-    p1 = player1.play_card()
-    p2 = player2.play_card()
-```
+    ```
+        p1 = player1.play_card()
+        p2 = player2.play_card()
+    ```
 
 3. **Add the cards in the correct order to the round-winner's hand**.
-```
-    if p1 > p2:
-            player1.add_cards([p1, p2])
-        else:
-            player2.add_cards([p2, p1])
-```
+    ```
+        if p1 > p2:
+                player1.add_cards([p1, p2])
+            else:
+                player2.add_cards([p2, p1])
+    ```
 
 4. **The winner will be the only player with cards left at the end**, and the `Player.count_score()` convenience method makes finding Part 1's answer a breeze.
-```
-winner = player1 if player1.has_cards() else player2
+    ```
+    winner = player1 if player1.has_cards() else player2
 
-print("Part 1: {0}\n\n".format(winner.count_score()))
-```
+    print("Part 1: {0}\n\n".format(winner.count_score()))
+    ```
 
 ## Part 2
 >--- Part Two ---
@@ -444,26 +444,26 @@ print("Part 1: {0}\n\n".format(winner.count_score()))
 The make-a-copy-of-your-hand and the limit-the-hand-size-based-on-the-dealt-card twists necessitated a few more convenience methods on my `Player` class:
 
 - A `count_cards` method to determine how much to truncate the hands for recrusive games
-```
-def count_cards(self):
-    return len(self.cards)
-```
+    ```
+    def count_cards(self):
+        return len(self.cards)
+    ```
 
 - A `get_hand_state` method that was used to (A) prevent infinite loops and to (B) build out a cache to shorten the runtime
-```
-def get_hand_state(self):
-    return self.name.replace(" ","") + ":" + ",".join(list(map(str,self.cards)))
-```
+    ```
+    def get_hand_state(self):
+        return self.name.replace(" ","") + ":" + ",".join(list(map(str,self.cards)))
+    ```
 
 - And a couple of `copy` methods to handle not mutating the Players themselves when kicking off recursive games
-```
-def copy(self):
-    return Player(self.name, self.cards.copy())
+    ```
+    def copy(self):
+        return Player(self.name, self.cards.copy())
 
-def copy_and_trim(self, size):
-        cards = self.cards[0:size]
-        return Player(self.name,cards)
-```
+    def copy_and_trim(self, size):
+            cards = self.cards[0:size]
+            return Player(self.name,cards)
+    ```
 
 In my `run_program` method, I now passed in _copies_ of my `Player` instances to prevent mutation between the parts:
 ```

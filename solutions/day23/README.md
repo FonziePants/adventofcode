@@ -132,7 +132,7 @@ def round(data,lowest, highest):
 ...and because I moved the first character to the back instead of actually iterating through the character array, I had to reverse my modifications for the same number of rounds (and yes, I could have used modulo to make the string correction exactly once, but I was racing and the for-loop was quicker):
 ```
 for i in range(rounds):
-        data = data[-1:] + data[0:-1]
+    data = data[-1:] + data[0:-1]
 ```
 
 ## Part 2

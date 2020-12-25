@@ -35,7 +35,6 @@ While the data relationships were simple (at most one allergen per ingredient, a
 class Recipe:
     def __init__(self,line):
         parts = line.split(" (contains ")
-        allergens = parts[1][0:-1].split(", ")
         
         self.ingredients = parts[0].split(" ")
         self.allergens = parts[1][0:-1].split(", ")
