@@ -157,7 +157,7 @@ for allergen in alphabetical_allergens:
 
 3. **Format it**. One line in Python, that's it.
 ```
-",".join(alphabetical_ingredients
+",".join(alphabetical_ingredients)
 ```
 
 😎
