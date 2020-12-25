@@ -6,7 +6,9 @@ This is a repository that contains code for solving the [Advent of Code 2020 cha
 To set up Python in a Windows 10 VS Code environment, [follow these instructions](https://code.visualstudio.com/docs/python/python-tutorial).
 
 ## Solutions
-To view the solutions and their writeups, check out the subdirectories in the `/solutions` directory. For the more detailed writeups, check out [**Day 19**: Monster Messages](https://github.com/FonziePants/adventofcode/blob/main/solutions/day19/README.md), [**Day 20**: Jurassic Jigsaw](https://github.com/FonziePants/adventofcode/blob/main/solutions/day20/README.md), [**Day 21**: Allergen Assessment](https://github.com/FonziePants/adventofcode/blob/main/solutions/day21/README.md), [**Day 22**: Crab Combat](https://github.com/FonziePants/adventofcode/blob/main/solutions/day22/README.md), [**Day 23**: Crab Cups](https://github.com/FonziePants/adventofcode/blob/main/solutions/day23/README.md), and [**Day 24**: Lobby Layout](https://github.com/FonziePants/adventofcode/blob/main/solutions/day24/README.md).
+To view the solutions and their writeups, check out the subdirectories in the `/solutions` directory. 
+
+For the more detailed writeups, check out [**Day 19**: Monster Messages](https://github.com/FonziePants/adventofcode/blob/main/solutions/day19/README.md), [**Day 20**: Jurassic Jigsaw](https://github.com/FonziePants/adventofcode/blob/main/solutions/day20/README.md), [**Day 21**: Allergen Assessment](https://github.com/FonziePants/adventofcode/blob/main/solutions/day21/README.md), [**Day 22**: Crab Combat](https://github.com/FonziePants/adventofcode/blob/main/solutions/day22/README.md), [**Day 23**: Crab Cups](https://github.com/FonziePants/adventofcode/blob/main/solutions/day23/README.md), and [**Day 24**: Lobby Layout](https://github.com/FonziePants/adventofcode/blob/main/solutions/day24/README.md).
 
 - [**Day 01**: Report Repair](https://github.com/FonziePants/adventofcode/blob/main/solutions/day01/README.md)
 - [**Day 02**: Password Philosophy](https://github.com/FonziePants/adventofcode/blob/main/solutions/day02/README.md)
