@@ -44,7 +44,7 @@
 I thought this problem was so straightforward that I wrote methods as I read the problem:
 
 1. I updated my standard `read_data(file_path)` method to store its `data` array elements as `int` instead of `str` by changing `data.append(line.rstrip())` to `data.append(int(line.rstrip()))`.
-2. I wrote a `transdoem_subject_number(...)` method based on the instructions:
+2. I wrote a `transform_subject_number(...)` method based on the instructions:
     ```
     def transform_subject_number(loop_size, subject_number):
         value = 1
