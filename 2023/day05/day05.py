@@ -123,20 +123,19 @@ def part2(seeds, rule_map):
     while key != 'location':
         new_seed_ranges = []
         for seed_range in seed_ranges:
-            temp_seed_ranges = []
             updated_sr = copy_range(seed_range)
             for rule in rule_map[key]['rules']:
                 if updated_sr is None:
                     break
                 if rule.min <= updated_sr.min <= rule.max:
                     if updated_sr.max <= rule.max:
-                        temp_seed_ranges.append(SeedRange(
+                        new_seed_ranges.append(SeedRange(
                             min=updated_sr.min+rule.offset,
                             max=updated_sr.max+rule.offset,
                         ))
                         updated_sr = None
                     elif rule.max < updated_sr.max:
-                        temp_seed_ranges.append(SeedRange(
+                        new_seed_ranges.append(SeedRange(
                             min=updated_sr.min+rule.offset,
                             max=rule.max+rule.offset,
                         ))
@@ -145,18 +144,17 @@ def part2(seeds, rule_map):
                             max=updated_sr.max,
                         )
                 elif rule.min <= updated_sr.max <= rule.max:
-                    temp_seed_ranges.append(SeedRange(
+                    new_seed_ranges.append(SeedRange(
                         min=updated_sr.min,
                         max=rule.min-1,
                     ))
-                    temp_seed_ranges.append(SeedRange(
+                    new_seed_ranges.append(SeedRange(
                         min=rule.min+rule.offset,
                         max=updated_sr.max+rule.offset,
                     ))
                     updated_sr = None
             if updated_sr is not None:
-                temp_seed_ranges.append(updated_sr)
-            new_seed_ranges += temp_seed_ranges
+                new_seed_ranges.append(updated_sr)
         seed_ranges = new_seed_ranges
         seed_ranges.sort(key=sort_ranges)
         key = rule_map[key]['dst']
